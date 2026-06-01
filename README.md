@@ -68,6 +68,17 @@ cd demo && npm install && npm run demo
 
 A captured run is checked in at [`demo/transcript.txt`](./demo/transcript.txt).
 
+And the **agent reasoning loop** — the real ADK runner driving that MCP server
+through a model, with the final answer pulled from live tool output — is proven
+key-free too (a scripted `BaseLlm` stands in for Gemini; the wiring is identical):
+
+```bash
+cd demo && npm install && pip install google-adk mcp && npm run loop
+```
+
+Captured run: [`demo/agent_loop_transcript.txt`](./demo/agent_loop_transcript.txt).
+See [`demo/README.md`](./demo/README.md#agent-loop-proof-npm-run-loop) for what it asserts.
+
 ## Configuration
 
 | Env var | Default | Meaning |

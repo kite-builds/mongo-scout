@@ -5,11 +5,12 @@
   "type": "module",
   "description": "Key-free, reproducible end-to-end demo of the mongo-scout MCP layer against a real ephemeral MongoDB.",
   "scripts": {
-    "demo": "node run.mjs"
+    "demo": "node run.mjs",
+    "loop": "python3 agent_loop_demo.py"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.12.0",
+    "@modelcontextprotocol/sdk": "^1.29.0",
     "mongodb": "^6.10.0",
-    "mongodb-memory-server": "^10.1.2"
+    "mongodb-memory-server": "^10.4.3"
   }
 }

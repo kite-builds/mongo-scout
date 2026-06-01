@@ -63,13 +63,29 @@ seeded ground truth. A captured run is at [`demo/transcript.txt`](./demo/transcr
 This is the same tool surface Gemini drives in production; the demo just swaps
 the LLM client for a deterministic harness so it needs no credentials.
 
+And the **agent reasoning loop itself** is proven the same way — key-free:
+
+```bash
+cd demo && npm install && pip install google-adk mcp && npm run loop
+```
+
+`demo/agent_loop_demo.py` runs the **real ADK path** (`InMemoryRunner` +
+`LlmAgent` + the product's `build_mongodb_toolset()`) against a real ephemeral
+MongoDB, with a scripted `google.adk.models.BaseLlm` standing in for Gemini. The
+final number is read out of the live `FunctionResponse`, so a green run proves
+data flowed **model → MCP tool → model → answer** — exactly the loop a judge
+wants to see, minus only the Gemini key. Captured run:
+[`demo/agent_loop_transcript.txt`](./demo/agent_loop_transcript.txt); also a
+pytest (`tests/test_e2e_agent.py`) that auto-skips when Node deps are absent.
+
 ## Status checklist (for the Devpost form)
 
 - [x] New repo, MIT-licensed, license visible at repo root
 - [x] Gemini + ADK agent, MongoDB MCP server integrated, read-only by default
 - [x] Offline test suite green; `--check` smoke path
 - [x] Reproducible end-to-end MCP proof against a real MongoDB (`demo/`, no key/account)
-- [ ] ~3-minute demo video (record `npm run demo` + a live Gemini query)
+- [x] Reproducible end-to-end **agent-loop** proof (ADK runner → MCP → answer, no key)
+- [ ] ~3-minute demo video (record `npm run loop` + a live Gemini query)
 - [ ] Hosted project URL
 - [ ] Devpost submission form (MongoDB track)
 ```

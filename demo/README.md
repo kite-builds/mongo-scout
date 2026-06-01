@@ -1,4 +1,14 @@
-# mongo-scout — end-to-end demo (no key, no cloud account)
+# mongo-scout — end-to-end demos (no key, no cloud account)
+
+Two reproducible proofs live here, both key-free and account-free:
+
+1. **`npm run demo`** — proves the **database layer**: the official MongoDB MCP
+   server, launched read-only, answers triage questions against a real MongoDB.
+2. **`npm run loop`** — proves the **agent reasoning loop**: the real ADK runner
+   driving that MCP server through a model, end to end, with the final answer
+   derived from live tool output. See [Agent-loop proof](#agent-loop-proof-npm-run-loop).
+
+## Database-layer demo (`npm run demo`)
 
 This proves the project's central claim is real, not aspirational:
 
@@ -51,3 +61,44 @@ wrapping untrusted DB content) without running anything.
 > Note: `mongodb-mcp-server`'s `collection-indexes` tool calls an Atlas-only
 > `$listSearchIndexes` stage, so index triage is an Atlas-only capability and is
 > intentionally not part of this local, account-free demo.
+
+## Agent-loop proof (`npm run loop`)
+
+`npm run demo` proves the *tools*. This proves the other half — the **Gemini +
+ADK loop that drives them**, which is what the hackathon brief is actually about:
+
+```
+ADK runner → LlmAgent → (model decides) → McpToolset → mongodb-mcp-server
+          → tool result → back into the model → final natural-language answer
+```
+
+[`agent_loop_demo.py`](./agent_loop_demo.py) runs that **real ADK path**
+(`InMemoryRunner` + `LlmAgent` + the same `build_mongodb_toolset()` the product
+uses) against a real ephemeral MongoDB. The only thing it substitutes for a live
+Gemini key is a `ScriptedLLM` — a genuine `google.adk.models.BaseLlm` that plays
+the moves a competent model makes for *"how many orders are stuck pending?"*:
+list collections → count `orders` where `status="pending"` → answer. ADK cannot
+tell it apart from Gemini, so the runner/toolset path exercised is exactly
+production's.
+
+The clincher: the number in the final answer is **not hardcoded** —
+`ScriptedLLM` reads it out of the live `FunctionResponse` the MCP server
+returned. A green run therefore proves data flowed **model → tool → model →
+answer**. Swap `ScriptedLLM` for `"gemini-2.0-flash"` + `GEMINI_API_KEY` and the
+identical wiring runs on Gemini.
+
+```bash
+cd demo
+npm install                                   # mongod + MCP sdk (one-time)
+pip install google-adk mcp                     # ADK runtime (or: uv pip install …)
+npm run loop                                    # = python3 agent_loop_demo.py
+```
+
+It boots a seeded mongod, builds the real agent, runs the loop, and asserts:
+the model issued ≥2 live tool calls through ADK; the count read back equals the
+seeded ground truth (17); and the final answer cites that live number. Exit
+code `0` only if all three hold. A captured run is checked in at
+[`agent_loop_transcript.txt`](./agent_loop_transcript.txt).
+
+The same loop is also a pytest (`tests/test_e2e_agent.py`); it auto-skips when
+the Node deps above are absent, so the default offline `pytest` stays green.

@@ -1,0 +1,24 @@
+mongo-scout — end-to-end AGENT LOOP demo (no Gemini key, no cloud account)
+
+1/4  Booting a seeded ephemeral MongoDB (mongodb-memory-server)…
+     up at mongodb://127.0.0.1:59750/
+     seeded db "shop": {"users": 40, "orders": 120, "events": 300}; ground-truth pending orders = 17
+2/4  Building the REAL ADK agent — scripted model + MongoDB MCP toolset…
+     agent 'mongo_scout' built with 1 toolset(s); --readOnly=True
+3/4  Running the loop on: "How many orders are stuck in pending right now?"
+  → model calls tool: list-collections({"database": "shop"})
+  ← tool returned: {"content": [{"type": "text", "text": "Found 3 collections for database \"shop\"."}, {"type": "text", "text": "The following section contains unverified user da…
+  → model calls tool: count({"database": "shop", "collection": "orders", "query": {"status": "pending"}})
+  ← tool returned: {"content": [{"type": "text", "text": "Found 17 documents in the collection \"orders\" that matched the query."}], "isError": false}
+
+  Agent's final answer:
+    There are 17 orders currently stuck in 'pending' in the 'shop' database. I determined this by listing the collections and then running a read-only count on orders where status='pending' via the MongoDB MCP server.
+────────────────────────────────────────────────────────────────────────
+4/4  Verifying the loop carried REAL data (not a hardcoded number)…
+  ✔ the model issued live tool calls through ADK — calls = ['list-collections', 'count']
+  ✔ the count read back from the MCP server equals seeded ground truth — observed 17, seeded 17
+  ✔ the final natural-language answer contains that live number — answer cites 17
+────────────────────────────────────────────────────────────────────────
+
+RESULT: 3/3 checks green — the full Gemini-shaped agent loop ran against a real MongoDB with no key.
+Swap ScriptedLLM for 'gemini-2.0-flash' + GEMINI_API_KEY and the identical wiring runs on Gemini.
