@@ -46,12 +46,30 @@ For a live demo, set `GEMINI_API_KEY` (free from AI Studio) and
 mongo-scout "list the databases and which collection has the most documents"
 ```
 
+### Reproducible end-to-end proof (no key, no account)
+
+For reviewers who don't want to provision Gemini + Atlas, [`demo/`](./demo)
+proves the MCP integration works against a **real** MongoDB with one command:
+
+```bash
+cd demo && npm install && npm run demo
+```
+
+It launches an ephemeral `mongod` (`mongodb-memory-server`), seeds a realistic
+ops dataset, and drives the **real `mongodb-mcp-server@latest`** with the exact
+`--readOnly` launch parameters from `build_mongodb_toolset()` — answering five
+triage questions purely from live tool calls and asserting each against the
+seeded ground truth. A captured run is at [`demo/transcript.txt`](./demo/transcript.txt).
+This is the same tool surface Gemini drives in production; the demo just swaps
+the LLM client for a deterministic harness so it needs no credentials.
+
 ## Status checklist (for the Devpost form)
 
 - [x] New repo, MIT-licensed, license visible at repo root
 - [x] Gemini + ADK agent, MongoDB MCP server integrated, read-only by default
 - [x] Offline test suite green; `--check` smoke path
-- [ ] ~3-minute demo video (record against an Atlas sample dataset)
+- [x] Reproducible end-to-end MCP proof against a real MongoDB (`demo/`, no key/account)
+- [ ] ~3-minute demo video (record `npm run demo` + a live Gemini query)
 - [ ] Hosted project URL
 - [ ] Devpost submission form (MongoDB track)
 ```

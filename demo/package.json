@@ -1,0 +1,15 @@
+{
+  "name": "mongo-scout-demo",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Key-free, reproducible end-to-end demo of the mongo-scout MCP layer against a real ephemeral MongoDB.",
+  "scripts": {
+    "demo": "node run.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "mongodb": "^6.10.0",
+    "mongodb-memory-server": "^10.1.2"
+  }
+}

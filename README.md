@@ -54,6 +54,20 @@ mongo-scout "list the databases and tell me which collection has the most docume
 making any network call — it's what CI runs and how you confirm the wiring
 before spending a token.
 
+## See it actually work (no key, no account)
+
+Want proof the MCP layer is real and not just wiring? [`demo/`](./demo) spins up
+an **ephemeral real MongoDB**, seeds a realistic ops dataset, and drives the
+**real `mongodb-mcp-server`** with the same `--readOnly` launch parameters the
+agent uses — answering five triage questions purely from live tool calls, with
+**no Gemini key and no MongoDB account**:
+
+```bash
+cd demo && npm install && npm run demo
+```
+
+A captured run is checked in at [`demo/transcript.txt`](./demo/transcript.txt).
+
 ## Configuration
 
 | Env var | Default | Meaning |
