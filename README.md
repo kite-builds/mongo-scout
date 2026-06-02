@@ -14,7 +14,19 @@ makes against the MCP server, and the server runs in `--readOnly` mode by
 default, so the agent physically cannot mutate data.
 
 > Built for the **Google Cloud Rapid Agent Hackathon** (MongoDB track). See
-> [`HACKATHON.md`](./HACKATHON.md).
+> [`HACKATHON.md`](./HACKATHON.md) and the [submission notes](./SUBMISSION.md).
+
+## Demo
+
+![mongo-scout key-free demo](./demo/media/mongo-scout-demo.gif)
+
+A ~30-second screencast of the **key-free** proof: an ephemeral real MongoDB is
+booted, the **official `mongodb-mcp-server`** is launched `--readOnly`, and five
+triage questions are answered purely from live tool calls — each asserted against
+seeded ground truth. No Gemini key, no cloud account. Reproduce it with
+`cd demo && npm install && npm run demo`; regenerate the video with
+[`demo/record/make_video.sh`](./demo/record/make_video.sh). MP4:
+[`demo/media/mongo-scout-demo.mp4`](./demo/media/mongo-scout-demo.mp4).
 
 ## How it works
 
