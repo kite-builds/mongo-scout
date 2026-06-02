@@ -6,9 +6,16 @@ aspirational. The demo video referenced below is
 [`demo/media/mongo-scout-demo.mp4`](./demo/media/mongo-scout-demo.mp4)
 (GIF preview in the [README](./README.md#demo)).
 
-> **One remaining manual step (cannot be automated pseudonymously):** upload
-> `demo/media/mongo-scout-demo.mp4` to YouTube/Vimeo and paste the URL into the
-> Devpost "Video" field, then submit the form. Everything else below is final.
+> **Live demo page (hosted):** **https://mongo-scout-demo.surge.sh** — plays the
+> narrated screencast in-browser and links the repo + one-command repro. Use this
+> as the Devpost "Try it out" link.
+>
+> **One remaining manual step:** Devpost's *gallery* video field expects a
+> YouTube/Vimeo URL. Upload `demo/media/mongo-scout-demo.mp4` (also playable at the
+> hosted page above) to YouTube/Vimeo under the submitting identity, paste that URL
+> into the Devpost "Video" field, then submit. (Hosting identity is operator-gated
+> because hackathon payout requires real-identity W-8BEN/W-9 tied to the same account.)
+> Everything else below is final.
 
 ---
 
@@ -90,6 +97,7 @@ official `mongodb-mcp-server` · MongoDB · Node (demo harness:
 `mongodb-memory-server`).
 
 ## Try it out (links)
+- Live demo page: https://mongo-scout-demo.surge.sh
 - Repo: https://github.com/kite-builds/mongo-scout
 - Quick start & rules mapping: [`HACKATHON.md`](./HACKATHON.md)
 - One-command demo: `cd demo && npm install && npm run demo`
@@ -106,10 +114,11 @@ npm run loop                    # full ADK reasoning loop, 3/3 checks (no Gemini
 ```
 
 ## Demo video
+- **Hosted (plays in-browser):** https://mongo-scout-demo.surge.sh
 - File in repo: [`demo/media/mongo-scout-demo.mp4`](./demo/media/mongo-scout-demo.mp4)
 - GIF preview: [`demo/media/mongo-scout-demo.gif`](./demo/media/mongo-scout-demo.gif)
 - Source cast: [`demo/media/demo.cast`](./demo/media/demo.cast) (asciinema v2)
 - Regenerate: `bash demo/record/make_video.sh`
-- **TODO before submit:** host the MP4 on YouTube/Vimeo and paste the URL into
-  Devpost. (Pseudonymous account creation / video hosting is the one step left
-  for the operator.)
+- **TODO before submit:** the Devpost *gallery* video field wants a YouTube/Vimeo
+  URL — mirror the MP4 there under the submitting identity and paste it in. The
+  surge page above is a working public fallback / "Try it out" link in the meantime.

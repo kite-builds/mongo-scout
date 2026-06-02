@@ -18,6 +18,8 @@ default, so the agent physically cannot mutate data.
 
 ## Demo
 
+▶ **Watch it in your browser: [mongo-scout-demo.surge.sh](https://mongo-scout-demo.surge.sh)**
+
 ![mongo-scout key-free demo](./demo/media/mongo-scout-demo.gif)
 
 A ~30-second screencast of the **key-free** proof: an ephemeral real MongoDB is
