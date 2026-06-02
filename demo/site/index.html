@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>mongo-scout — read-only NL triage agent for MongoDB</title>
+<meta name="description" content="A read-only natural-language triage agent for MongoDB. Gemini + Google ADK, every read a tool call through the official MongoDB MCP server launched --readOnly. Safe by construction." />
+<style>
+  :root{--bg:#0d1117;--panel:#161b22;--line:#30363d;--text:#e6edf3;--muted:#9da7b3;--accent:#3fb950;--mongo:#00ed64;}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  .wrap{max-width:880px;margin:0 auto;padding:48px 20px 80px}
+  h1{font-size:2.1rem;margin:0 0 6px;letter-spacing:-.02em}
+  .tag{color:var(--muted);font-size:1.05rem;margin:0 0 28px}
+  .badges{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 32px}
+  .badge{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:.82rem;color:var(--muted)}
+  .badge b{color:var(--mongo)}
+  video{width:100%;border:1px solid var(--line);border-radius:10px;background:#000}
+  .vidnote{color:var(--muted);font-size:.85rem;margin:8px 0 36px;text-align:center}
+  h2{font-size:1.25rem;margin:36px 0 12px;border-bottom:1px solid var(--line);padding-bottom:8px}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin:0 0 18px}
+  ul{margin:0;padding-left:20px}
+  li{margin:6px 0}
+  code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  pre{background:#0a0d12;border:1px solid var(--line);border-radius:8px;padding:14px 16px;overflow-x:auto;font-size:.86rem;color:#c9d3df}
+  code{background:#0a0d12;border:1px solid var(--line);border-radius:4px;padding:1px 5px;font-size:.86em;color:#c9d3df}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .safe{color:var(--accent);font-weight:600}
+  footer{margin-top:48px;color:var(--muted);font-size:.82rem;border-top:1px solid var(--line);padding-top:18px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>mongo-scout 🔎</h1>
+  <p class="tag">A read-only natural-language triage agent for MongoDB. Ask production data plain questions; every read is a tool call through the official MongoDB MCP server, launched <code>--readOnly</code> so it <span class="safe">physically cannot mutate anything</span>.</p>
+
+  <div class="badges">
+    <span class="badge">Google Cloud Rapid Agent Hackathon · <b>MongoDB track</b></span>
+    <span class="badge">Gemini + Google ADK</span>
+    <span class="badge">Model Context Protocol</span>
+    <span class="badge">Safe by construction</span>
+  </div>
+
+  <video controls preload="metadata" poster="mongo-scout-demo.gif">
+    <source src="mongo-scout-demo.mp4" type="video/mp4" />
+    Your browser can't play the embedded video —
+    <a href="mongo-scout-demo.mp4">download the MP4</a> or view the
+    <a href="mongo-scout-demo.gif">GIF</a>.
+  </video>
+  <p class="vidnote">Narrated terminal screencast of the key-free, one-command end-to-end proof. No edits, no mockups — real <code>mongod</code> + real MCP server.</p>
+
+  <h2>What it does</h2>
+  <div class="panel"><ul>
+    <li>Accepts a plain-English question about a live MongoDB deployment.</li>
+    <li>The Gemini agent plans, then answers using <b>only</b> MCP tool calls (<code>list-collections</code>, <code>count</code>, <code>aggregate</code>, <code>collection-schema</code>, <code>find</code>…).</li>
+    <li>Returns real numbers derived from live tool output — never guessed.</li>
+    <li><span class="safe">Cannot mutate:</span> launched with <code>--readOnly</code>, the server exposes no write/delete/drop tools, so a prompt-injected "delete everything" has no tool to call.</li>
+  </ul></div>
+
+  <h2>Why it's defensible</h2>
+  <div class="panel"><ul>
+    <li><b>Zero hand-written DB code.</b> The model's entire database surface <i>is</i> the official <code>mongodb-mcp-server</code>.</li>
+    <li><b>Safety at the tool layer, not the prompt.</b> <code>--readOnly</code> removes the write tools — safety doesn't depend on the model behaving.</li>
+    <li><b>Untrusted data is fenced.</b> Every row arrives wrapped in the MCP server's prompt-injection guard; the agent treats tool output as data, not instructions.</li>
+  </ul></div>
+
+  <h2>Run the proof yourself (no Gemini key, no Atlas account, ~30s)</h2>
+  <pre>git clone https://github.com/kite-builds/mongo-scout &amp;&amp; cd mongo-scout
+python -m venv .venv &amp;&amp; source .venv/bin/activate
+pip install -e ".[dev]"
+pytest -q                       # offline, green with no key and no MongoDB
+mongo-scout --check             # builds the live agent + MCP toolset, no network
+cd demo &amp;&amp; npm install &amp;&amp; npm run demo   # real MongoDB + real MCP server, 5/5 checks
+npm run loop                    # full ADK reasoning loop, 3/3 checks (no Gemini key)</pre>
+
+  <h2>Tech stack</h2>
+  <div class="panel">Python · Google ADK · Gemini (<code>gemini-2.0-flash</code>) · Model Context Protocol · official <code>mongodb-mcp-server</code> · MongoDB · Node demo harness (<code>mongodb-memory-server</code>).</div>
+
+  <footer>
+    Repo: <a href="https://github.com/kite-builds/mongo-scout">github.com/kite-builds/mongo-scout</a> · Built by Kite (kite-builds) ·
+    <a href="mongo-scout-demo.mp4">MP4</a> · <a href="mongo-scout-demo.gif">GIF</a>
+  </footer>
+</div>
+</body>
+</html>
